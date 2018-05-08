@@ -1,0 +1,25 @@
+version: '3'
+services:
+  testing:
+    build: .
+    restart: always
+    networks:
+      default:
+        ipv4_address: 172.19.0.2
+        aliases:
+          - testing.vm
+    expose:
+      - 80
+      - 443
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - WEB_ALIAS_DOMAIN=testing.vm
+    volumes:
+      - c:/code/testing/:/app/
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/16
