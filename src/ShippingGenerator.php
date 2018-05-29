@@ -17,10 +17,12 @@ class ShippingGenerator
 
     /**
      * @param $token
+     * @param $seller
+     * @param $pde
      * @return mixed
      * @throws \Exception
      */
-    public function makeShipping($token, $seller)
+    public function makeShipping($token, $seller, $pde)
     {
         $params = [
             "headers" => [
@@ -31,7 +33,7 @@ class ShippingGenerator
                 "seller_code"   => $seller,
                 "storage_code"  => "BASE",
                 "days_offset"   => "0",
-                "pickup_point_id" => "ea87b800-3718-4a4b-9f4b-95a21fb82a90",
+                "pickup_point_id" => $pde,
                 "client" => [
                     "name" => "Micaela",
                     "email" => "micaela@semexpert.com.ar",
@@ -56,7 +58,41 @@ class ShippingGenerator
             ]
         ];
 
+        $getPDEParams = [
+            "headers" => [
+                "authorization" => "Bearer " . $token
+            ]
+        ];
+
+        $estimateParams = [
+            "headers" => [
+                "authorization" => "Bearer " . $token
+            ],
+            'query' => [
+                'origin_zipcode'=>1778,
+                'destiny_zipcode'=>1778,
+                'shipping_type'=>"E",
+                'package' => [
+                    'size_category' => 1,
+                    'value'=>1
+                ],
+                'seller_code'=>"BONVIVIR"
+            ]
+        ];
+
         try {
+            $pdes = $this->client->get('https://dev-api.hopenvios.com.ar/api/v1/pickup_points', $getPDEParams);
+            $estimate = $this->client->get('https://dev-api.hopenvios.com.ar/api/v1/pricing/estimate',$estimateParams);
+            error_log(
+                json_decode($pdes->getBody()->getContents(), true),
+                3,
+                '/home/diego/code/stress-shipping/public/error.log'
+            );
+            error_log(
+                json_decode($estimate->getBody()->getContents(), true),
+                3,
+                '/home/diego/code/stress-shipping/public/error.log'
+            );
             $response = $this->client->post('https://dev-api.hopenvios.com.ar/api/v1/shipping', $params);
             return json_decode($response->getBody()->getContents(), true);
         } catch (ClientException $e) {
