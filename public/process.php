@@ -16,15 +16,10 @@ $tokenHandler = new TokenHandler($options['i'], $options['s'], $options['e'], $o
 $shippingGenerator = new ShippingGenerator();
 
 $pdeList = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7'
+    '5b4673a4-8d5a-4549-b146-1f4d75fbadf1'
 ];
 
+error_log('Comenzando', 3, '/home/diego/code/stress-shipping/public/error.log');
 for ($i=1; $i<=$quantity; $i++) {
 
     try {

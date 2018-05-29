@@ -76,13 +76,13 @@ class ShippingGenerator
                     'size_category' => 1,
                     'value'=>1
                 ],
-                'seller_code'=>"BONVIVIR"
+                'seller_code'=>$seller
             ]
         ];
 
         try {
-            $pdes = $this->client->get('https://dev-api.hopenvios.com.ar/api/v1/pickup_points', $getPDEParams);
-            $estimate = $this->client->get('https://dev-api.hopenvios.com.ar/api/v1/pricing/estimate',$estimateParams);
+            $pdes = $this->client->get('https://lne-api.vm/api/v1/pickup_points', $getPDEParams);
+            $estimate = $this->client->get('https://lne-api.vm/api/v1/pricing/estimate',$estimateParams);
             error_log(
                 json_decode($pdes->getBody()->getContents(), true),
                 3,
@@ -93,7 +93,7 @@ class ShippingGenerator
                 3,
                 '/home/diego/code/stress-shipping/public/error.log'
             );
-            $response = $this->client->post('https://dev-api.hopenvios.com.ar/api/v1/shipping', $params);
+            $response = $this->client->post('https://lne-api.vm/api/v1/shipping', $params);
             return json_decode($response->getBody()->getContents(), true);
         } catch (ClientException $e) {
             throw new \Exception($e->getResponse()->getBody()->getContents());
